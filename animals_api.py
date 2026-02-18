@@ -10,11 +10,11 @@ if NINJA_API_KEY is None:
     raise ValueError("NINJA_API_KEY environment variable not set in .env file")
 
 
-def request_animals_data(name: str = 'fox'):
+def request_animals_data(name: str) -> list:
     """
     Request data from API-Ninja V1 animals API.
     Returns up to 10 results matching the input name parameter.
-    :param name: search parameter for the API call | default = 'fox'
+    :param name: search parameter for the API call
     :return: List of dictionaries containing animals data
     """
     animals = requests.get(

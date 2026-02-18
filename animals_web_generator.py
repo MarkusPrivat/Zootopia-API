@@ -74,7 +74,7 @@ def serialize_animal(animal_obj: dict) -> str:
 
 def serialize_animal_characteristics(animal_characteristics: dict) -> str:
     """
-    Enrich animal data with HTML structure
+    Enrich animal characteristics data with HTML structure
     :param animal_characteristics: characteristics from animal
     :return: serialize animal characteristics data as a string
     """
@@ -107,12 +107,13 @@ def paste_animals_in_html(html_template: str, animals_for_html: str) -> str:
     return html_template
 
 
-def get_animals_data() -> list:
+def get_animals_data() -> tuple[list, str]:
     """
     Get the search string for the API and request animals data.
     Retry if no data is found.
     :return: list of animals data dict
     """
+    no_animals = ""
     while True:
         try:
             search = input("Enter a name of an animal: ")
@@ -120,8 +121,8 @@ def get_animals_data() -> list:
                 raise ValueError("Please enter a animal name")
             animals = api.request_animals_data(search)
             if not animals:
-                raise ValueError(f"No animals found for '{search}'")
-            return animals
+                no_animals = f"<h2><center>The animal '{search}' doesn't exist.</center></h2>"
+            return animals, no_animals
         except ValueError as error:
             print(error)
 
@@ -131,10 +132,13 @@ def main() -> None:
     Main function
     :return: None
     """
-    animals = get_animals_data()
-    animals_for_html = get_animals_for_html(animals)
+    animals, no_animals = get_animals_data()
     html_template = read_html_file()
-    new_html = paste_animals_in_html(html_template, animals_for_html)
+    if not animals:
+        new_html = paste_animals_in_html(html_template, no_animals)
+    else:
+        animals_for_html = get_animals_for_html(animals)
+        new_html = paste_animals_in_html(html_template, animals_for_html)
     if write_html_file(new_html):
         print("Website was successfully generated to the file animals.html.")
 
