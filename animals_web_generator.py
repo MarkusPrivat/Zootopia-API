@@ -6,7 +6,7 @@ import animals_api as api
 BASE_PATH = os.path.dirname(__file__)
 
 
-def read_html_file():
+def read_html_file() -> str:
     """
     Reads template html file
     :return: html template from html file if error empty string
@@ -19,7 +19,7 @@ def read_html_file():
         return ""
 
 
-def write_html_file(new_html: str):
+def write_html_file(new_html: str) -> bool:
     """
     writes a string to html file
     :return: None
@@ -27,9 +27,10 @@ def write_html_file(new_html: str):
     file_path = os.path.join(BASE_PATH, 'animals.html')
     with open(file_path, 'w', encoding='utf-8') as file_obj:
         file_obj.write(new_html)
+    return True
 
 
-def get_animals_for_html(animals: list):
+def get_animals_for_html(animals: list) -> str:
     """
     Checks if we have the animal data we want to print and prints it.
     If we have no name for the animal, we skip it.
@@ -43,7 +44,7 @@ def get_animals_for_html(animals: list):
     return output
 
 
-def serialize_animal(animal_obj: dict):
+def serialize_animal(animal_obj: dict) -> str:
     """
     Enrich animal data with HTML structure
     :param animal_obj: data for one animal
@@ -71,7 +72,7 @@ def serialize_animal(animal_obj: dict):
     return output
 
 
-def serialize_animal_characteristics(animal_characteristics):
+def serialize_animal_characteristics(animal_characteristics: dict) -> str:
     """
     Enrich animal data with HTML structure
     :param animal_characteristics: characteristics from animal
@@ -92,7 +93,7 @@ def serialize_animal_characteristics(animal_characteristics):
     return output
 
 
-def paste_animals_in_html(html_template: str, animals_for_html: str):
+def paste_animals_in_html(html_template: str, animals_for_html: str) -> str:
     """
     Combine the html template and animals data into one html file.
     Only if html template contains '__REPLACE_ANIMALS_INFO__' else we get an empty string.
@@ -106,16 +107,36 @@ def paste_animals_in_html(html_template: str, animals_for_html: str):
     return html_template
 
 
-def main():
+def get_animals_data() -> list:
+    """
+    Get the search string for the API and request animals data.
+    Retry if no data is found.
+    :return: list of animals data dict
+    """
+    while True:
+        try:
+            search = input("Enter a name of an animal: ")
+            if not search:
+                raise ValueError("Please enter a animal name")
+            animals = api.request_animals_data(search)
+            if not animals:
+                raise ValueError(f"No animals found for '{search}'")
+            return animals
+        except ValueError as error:
+            print(error)
+
+
+def main() -> None:
     """
     Main function
     :return: None
     """
-    animals = api.request_animals_data()
+    animals = get_animals_data()
     animals_for_html = get_animals_for_html(animals)
     html_template = read_html_file()
     new_html = paste_animals_in_html(html_template, animals_for_html)
-    write_html_file(new_html)
+    if write_html_file(new_html):
+        print("Website was successfully generated to the file animals.html.")
 
 
 if __name__ == '__main__':
