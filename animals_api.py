@@ -13,8 +13,8 @@ if NINJA_API_KEY is None:
 def request_animals_data(name: str = 'fox'):
     """
     Request data from API-Ninja V1 animals API.
-    The API returns up to 10 results matching the input name parameter.
-    :param name: str to search with the animals API default = 'fox'
+    Returns up to 10 results matching the input name parameter.
+    :param name: search parameter for the API call | default = 'fox'
     :return: List of dictionaries containing animals data
     """
     animals = requests.get(
