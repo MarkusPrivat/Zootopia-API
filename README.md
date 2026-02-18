@@ -29,7 +29,7 @@ A Python-based tool that utilizes the **API-Ninjas Animals API** to fetch detail
 
 ## 📂 Project Structure
 
-* `main.py`: Handles file I/O, HTML generation logic, and the main program loop.
+* `animals_web_generator.py`: Handles file I/O, HTML generation logic, and the main program loop.
 * `animals_api.py`: Manages the connection and requests to the external API.
 * `animals_template.html`: The base HTML file (must include the `__REPLACE_ANIMALS_INFO__` placeholder).
 * `.env`: Stores your sensitive API key securely (ensure this is in your `.gitignore`).
